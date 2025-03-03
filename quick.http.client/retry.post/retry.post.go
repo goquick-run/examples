@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
-
 	"github.com/jeffotoni/quick/http/client"
+	"log"
 )
 
 func main() {
@@ -32,17 +31,18 @@ func main() {
 	// This configuration will retry up to 3 times with an exponential backoff starting at 2 seconds,
 	// and will only retry if the response status is 500, 502, 503, or 504.
 	cClient := client.New(
-		client.WithRetry(3, "2s-bex", "500,502,503,504"),
+		client.WithRetry(
+			3,                 // maxRetries
+			"2s-bex",          // retryDelay with backoff
+			"500,502,503,504", // http status
+		),
 	)
 
-	// Define the data payload for the POST request
-	data := map[string]string{
+	// Perform the POST request
+	resp, err := cClient.Post("http://localhost:3000/v1/user", map[string]string{
 		"name":  "Jefferson",
 		"email": "jeff@example.com",
-	}
-
-	// Perform the POST request
-	resp, err := cClient.Post("http://localhost:3000/v1/user", data)
+	})
 	if err != nil {
 		log.Fatal("Error making POST request:", err)
 	}
