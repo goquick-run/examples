@@ -38,7 +38,13 @@ func main() {
 			InsecureSkipVerify: true,
 			MinVersion:         tls.VersionTLS12,
 		}),
-		client.WithRetry(3, "2s-bex", "500,502,503,504"),
+		client.WithRetry(
+			3,                 // Maximum number of retries
+			"2s",              // Delay between attempts
+			true,              // Use exponential backoff
+			"500,502,503,504", // HTTP status for retry
+			true,              // show Logger
+		),
 	)
 
 	// Define a struct to send as JSON

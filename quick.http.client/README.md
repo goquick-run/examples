@@ -225,7 +225,13 @@ import (
 	"github.com/jeffotoni/quick/http/client"
 )
 cClient := client.New(
-    client.WithRetry(3, "2s-bex", "500,502,503,504"),
+    client.WithRetry(
+    	3,                 // Maximum number of retries
+		"2s",              // Delay between attempts
+		true,              // Use exponential backoff
+		"500,502,503,504", // HTTP status for retry
+		true,              // show Logger
+    ),
 )
 
 resp, err := cClient.Get("http://localhost:3000/v1/user/1234")

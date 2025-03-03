@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/jeffotoni/quick/http/client"
 	"log"
+
+	"github.com/jeffotoni/quick/http/client"
 )
 
 func main() {
@@ -26,15 +27,23 @@ func main() {
 	//
 	// Example Usage:
 	//
-	// client.WithRetry(3, "2s-bex", "500,502,503,504")
+	// client.WithRetry(
+	// 		3,                 // Maximum number of retries
+	// 		"2s",              // Delay between attempts
+	// 		true,              // Use exponential backoff
+	// 		"500,502,503,504", // HTTP status for retry
+	// 		true,              // show Logger
+	// 	),
 	//
 	// This configuration will retry up to 3 times with an exponential backoff starting at 2 seconds,
 	// and will only retry if the response status is 500, 502, 503, or 504.
 	cClient := client.New(
 		client.WithRetry(
-			3,                 // maxRetries
-			"2s-bex",          // retryDelay with backoff
-			"500,502,503,504", // http status
+			3,                 // Maximum number of retries
+			"2s",              // Delay between attempts
+			true,              // Use exponential backoff
+			"500,502,503,504", // HTTP status for retry
+			true,              // show Logger
 		),
 	)
 

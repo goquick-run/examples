@@ -28,7 +28,13 @@ func main() {
 		client.WithHeaders(map[string]string{
 			"User-Agent": "QuickClient/1.0",
 		}),
-		client.WithRetry(3, "1s-bex", "500,502,503,504"), // Enables retry for specific HTTP status codes
+		client.WithRetry(
+			3,                 // Maximum number of retries
+			"2s",              // Delay between attempts
+			true,              // Use exponential backoff
+			"500,502,503,504", // HTTP status for retry
+			true,              // show Logger
+		),
 	)
 
 	resp, err := cClient.Post("http://localhost:3000/v1/user", map[string]string{"name": "jeffotoni"})

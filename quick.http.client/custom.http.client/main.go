@@ -48,7 +48,14 @@ func main() {
 			"Content-Type":  "application/json",
 			"Authorization": "Bearer YOUR_ACCESS_TOKEN",
 		}),
-		client.WithRetry(3, "1s-bex", "500,502,503,504"), // Enables retry for specific HTTP status codes
+		// Enables retry for specific HTTP status codes
+		client.WithRetry(
+			3,                 // Maximum number of retries
+			"21",              // Delay between attempts
+			true,              // Use exponential backoff
+			"500,502,503,504", // HTTP status for retry
+			true,              // show Logger
+		),
 	)
 
 	// Performing a GET request

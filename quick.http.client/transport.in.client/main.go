@@ -41,8 +41,15 @@ func main() {
 			"Content-Type":  "application/json",
 			"Authorization": "Bearer YOUR_ACCESS_TOKEN",
 		}),
-		client.WithTimeout(15*time.Second),               // Setting a timeout for requests.
-		client.WithRetry(3, "1s-bex", "500,502,503,504"), // Retry on specific status codes.
+		client.WithTimeout(15*time.Second), // Setting a timeout for requests.
+		// Retry on specific status codes.
+		client.WithRetry(
+			3,                 // Maximum number of retries
+			"1s",              // Delay between attempts
+			true,              // Use exponential backoff
+			"500,502,503,504", // HTTP status for retry
+			true,              // show Logger
+		),
 	)
 
 	resp, err := cClient.Post("http://localhost:3000/v1/user", map[string]string{"name": "jeffotoni"})

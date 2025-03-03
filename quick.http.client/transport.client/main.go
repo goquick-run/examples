@@ -40,9 +40,16 @@ func main() {
 			"Content-Type":  "application/json",
 			"Authorization": "Bearer YOUR_ACCESS_TOKEN",
 		}),
-		client.WithTransport(customTransport),            // Applying the custom transport.
-		client.WithTimeout(15*time.Second),               // Setting a timeout for requests.
-		client.WithRetry(3, "1s-bex", "500,502,503,504"), // Retry on specific status codes.
+		client.WithTransport(customTransport), // Applying the custom transport.
+		client.WithTimeout(15*time.Second),    // Setting a timeout for requests.
+		// Retry on specific status codes.
+		client.WithRetry(
+			3,                 // Maximum number of retries
+			"2s",              // Delay between attempts
+			true,              // Use exponential backoff
+			"500,502,503,504", // HTTP status for retry
+			true,              // show Logger
+		),
 	)
 
 	// Define a struct to send as JSON
