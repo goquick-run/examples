@@ -1,7 +1,7 @@
+# ![Logo do Quick](/quick_logo.png)
 
-# Quick examples! ![Quick Logo](/quick.png)
+# Quick examples! ![Quick Logo](./quick.png)
   
-
 ### Welcome to the Quick example repository! 🚀
 
  **Quick** was born to be a simple route manager, but with time we saw that it could expand into something bigger.
