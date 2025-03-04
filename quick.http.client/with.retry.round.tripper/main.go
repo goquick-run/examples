@@ -15,12 +15,13 @@ func main() {
 
 		// Enabling retry with RoundTripper
 		client.WithRetryRoundTripper(
-			3,             // Maximum number of retries
-			"2s",          // Delay between retries
-			true,          // Use exponential backoff
-			"500,502,503", // Retry these HTTP codes
-			true,
-		),
+			client.RetryConfig{
+				MaxRetries: 2,
+				Delay:      1 * time.Second,
+				UseBackoff: true,
+				Statuses:   []int{500},
+				EnableLog:  true,
+			}),
 	)
 
 	resp, err := cClient.Post("http://localhost:3000/v1/user", map[string]string{"name": "jeffotoni"})

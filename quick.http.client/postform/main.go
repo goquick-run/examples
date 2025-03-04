@@ -11,6 +11,7 @@ import (
 
 func main() {
 
+	// Declare Values
 	formData := url.Values{}
 	formData.Set("username", "quick_user")
 	formData.Set("password", "supersecret")

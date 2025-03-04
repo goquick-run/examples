@@ -47,6 +47,14 @@ func main() {
 		client.WithContext(context.TODO()),
 		client.WithHeaders(map[string]string{"Content-Type": "application/xml"}),
 		client.WithHTTPClientConfig(cfg),
+		client.WithRetryRoundTripper(
+			client.RetryConfig{
+				MaxRetries: 2,
+				Delay:      1 * time.Second,
+				UseBackoff: true,
+				Statuses:   []int{500},
+				EnableLog:  true,
+			}),
 	)
 
 	// Define a struct to send as JSON

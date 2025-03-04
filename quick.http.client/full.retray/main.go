@@ -15,31 +15,29 @@ func main() {
 	// when I declare the 2 retrys, WithRetry RoundTripper and WithRetry ,
 	// the With Retry RoundTripper overrides it which is executed.
 	cClient := client.New(
-		client.WithTimeout(10*time.Second),
+		client.WithTimeout(5*time.Second),
 		client.WithHeaders(map[string]string{"Content-Type": "application/json"}),
 
 		// Advanced HTTP transport configuration
-		client.WithRetryTransport(
-			50,    // MaxIdleConns
-			10,    // MaxIdleConnsPerHost
-			30,    // MaxConnsPerHost
-			false, // DisableKeepAlives
-			true,  // Force HTTP/2
-			http.ProxyFromEnvironment,
-			&tls.Config{
-				InsecureSkipVerify: true,
-				MinVersion:         tls.VersionTLS12,
-			},
-		),
+		client.WithTransportConfig(&http.Transport{
+			Proxy:               http.ProxyFromEnvironment,
+			TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
+			ForceAttemptHTTP2:   true,
+			MaxIdleConns:        20,
+			MaxIdleConnsPerHost: 10,
+			MaxConnsPerHost:     20,
+			DisableKeepAlives:   false,
+		}),
 
 		// Automatic retry via RoundTripper
 		client.WithRetryRoundTripper(
-			5,                 // Maximum number of retries
-			"2s",              // Delay between attempts
-			true,              // Use exponential backoff
-			"500,502,503,504", // HTTP status for retry
-			true,              // show Logger
-		),
+			client.RetryConfig{
+				MaxRetries: 2,
+				Delay:      1 * time.Second,
+				UseBackoff: true,
+				Statuses:   []int{500},
+				EnableLog:  true,
+			}),
 
 		// Retry quick
 		// client.WithRetry(5, "2s-bex", "500,502,503,504"),

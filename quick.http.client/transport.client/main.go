@@ -29,7 +29,7 @@ func main() {
 
 	// Creating a fully custom *http.Client with the transport and timeout settings.
 	customHTTPClient := &http.Client{
-		Timeout: 15 * time.Second, // Sets a global timeout for all requests.
+		Timeout: 5 * time.Second, // Sets a global timeout for all requests.
 	}
 
 	// Creating a client using both the custom transport and other configurations.
@@ -41,15 +41,16 @@ func main() {
 			"Authorization": "Bearer YOUR_ACCESS_TOKEN",
 		}),
 		client.WithTransport(customTransport), // Applying the custom transport.
-		client.WithTimeout(15*time.Second),    // Setting a timeout for requests.
+		client.WithTimeout(5*time.Second),     // Setting a timeout for requests.
 		// Retry on specific status codes.
 		client.WithRetry(
-			3,                 // Maximum number of retries
-			"2s",              // Delay between attempts
-			true,              // Use exponential backoff
-			"500,502,503,504", // HTTP status for retry
-			true,              // show Logger
-		),
+			client.RetryConfig{
+				MaxRetries: 2,
+				Delay:      1 * time.Second,
+				UseBackoff: true,
+				Statuses:   []int{500},
+				EnableLog:  true,
+			}),
 	)
 
 	// Define a struct to send as JSON

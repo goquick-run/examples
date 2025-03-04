@@ -14,7 +14,7 @@ func main() {
 	}{
 		Message: "Hello, POST Quick New!!!",
 	}
-	resp, err := client.Put("http://localhost:3000/v1/user/1234", data)
+	resp, err := client.Put("https://httpbin.org/put", data)
 	if err != nil {
 		log.Fatal(err)
 	}

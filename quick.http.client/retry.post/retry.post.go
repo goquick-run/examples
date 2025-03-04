@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/jeffotoni/quick/http/client"
 )
@@ -17,23 +18,18 @@ import (
 // - "2mil"      => 2 milliseconds
 // - "2s"        => 2 seconds
 // - "2min"      => 2 minutes
-// - "2mil-bex"  => 2 milliseconds with exponential backoff
-// - "2s-bex"    => 2 seconds with exponential backoff
-// - "2min-bex"  => 2 minutes with exponential backoff
-//
-// When using the "-bex" suffix, the delay will increase exponentially on each retry attempt
-// using the formula: waitTime = baseDelay * (2^attempt).
 //
 // Example Usage:
 //
 // client.WithRetry(
 //
-//		3,                 // Maximum number of retries
-//		"2s",              // Delay between attempts
-//		true,              // Use exponential backoff
-//		"500,502,503,504", // HTTP status for retry
-//		true,              // show Logger
-//	),
+//	client.RetryConfig{
+//		MaxRetries: 2,
+//		Delay:      1 * time.Second,
+//		UseBackoff: true,
+//		Statuses:   []int{500},
+//		EnableLog:  true,
+//	}),
 //
 // This configuration will retry up to 3 times with an exponential backoff starting at 2 seconds,
 // and will only retry if the response status is 500, 502, 503, or 504.
@@ -41,12 +37,13 @@ func main() {
 
 	cClient := client.New(
 		client.WithRetry(
-			3,                 // Maximum number of retries
-			"2s",              // Delay between attempts
-			true,              // Use exponential backoff
-			"500,502,503,504", // HTTP status for retry
-			true,              // show Logger
-		),
+			client.RetryConfig{
+				MaxRetries: 2,
+				Delay:      1 * time.Second,
+				UseBackoff: true,
+				Statuses:   []int{500},
+				EnableLog:  true,
+			}),
 	)
 
 	// Perform the POST request

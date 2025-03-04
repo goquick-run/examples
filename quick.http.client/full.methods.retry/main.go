@@ -27,7 +27,7 @@ func main() {
 	// - WithRetry: Enables automatic retries for specific HTTP status codes (500, 502, 503, 504)
 	//   with exponential backoff (2s-bex) and a maximum of 3 attempts.
 	cClient := client.New(
-		client.WithTimeout(30*time.Second),
+		client.WithTimeout(5*time.Second),
 		client.WithDisableKeepAlives(false),
 		client.WithMaxIdleConns(20),
 		client.WithMaxConnsPerHost(20),
@@ -39,22 +39,16 @@ func main() {
 			MinVersion:         tls.VersionTLS12,
 		}),
 		client.WithRetry(
-			3,                 // Maximum number of retries
-			"2s",              // Delay between attempts
-			true,              // Use exponential backoff
-			"500,502,503,504", // HTTP status for retry
-			true,              // show Logger
-		),
+			client.RetryConfig{
+				MaxRetries: 2,
+				Delay:      1 * time.Second,
+				UseBackoff: true,
+				Statuses:   []int{500},
+				EnableLog:  true,
+			}),
 	)
 
-	// Define a struct to send as JSON
-	data := struct {
-		Message string `json:"message"`
-	}{
-		Message: "Hello, POST!",
-	}
-
-	resp, err := cClient.Post("http://localhost:3000/v1/user", data)
+	resp, err := cClient.Post("http://localhost:3000/v1/user", map[string]string{"message": "Hello, POST in Quick!"})
 	if err != nil {
 		log.Fatal(err)
 	}
